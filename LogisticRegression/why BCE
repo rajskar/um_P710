@@ -1,0 +1,23 @@
+The short answer is that using Mean Squared Error (MSE) with logistic regression creates a problem called a non-convex loss function, which makes it very difficult for an optimization algorithm like Gradient Descent to find the best solution.
+
+Why MSE is Problematic for Logistic Regression
+
+When you combine the sigmoid activation function (which logistic regression uses to output a probability between 0 and 1) with the squared error, the resulting loss function is not a simple, bowl-shaped curve. Instead, it has a rugged, bumpy surface with many local minima.
+
+The goal of gradient descent is to find the lowest point on this loss surface (the global minimum) where the model's error is minimized. However, with a non-convex function, gradient descent can get "stuck" in one of the local minima and never reach the true best solution. This makes the training process unreliable and ineffective.
+
+Why Binary Cross-Entropy (BCE) is Preferred
+
+Binary Cross-Entropy, also known as log-loss, is a more suitable choice because when it's paired with the sigmoid function, the resulting loss function is convex.
+
+A convex function has a single, well-defined global minimum. This guarantees that gradient descent will always find the optimal solution, regardless of where it starts.
+
+Furthermore, BCE loss is more intuitive for classification:
+
+    If the true class is 1 and your model predicts a probability close to 1, the BCE loss is very small.
+
+    If the true class is 1 and your model predicts a probability close to 0, the BCE loss becomes extremely large, heavily penalizing the model for its confident but incorrect prediction.
+
+This behavior provides a strong "signal" to the gradient descent algorithm, telling it to make large adjustments when the model is confidently wrong, leading to faster and more reliable convergence.
+
+https://youtu.be/bNwI3IUOKyg

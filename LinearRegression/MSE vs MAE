@@ -1,0 +1,53 @@
+why mae is robust over mse in terms of gaussian and laplacian
+
+The robustness of Mean Absolute Error (MAE) over Mean Squared Error (MSE) is directly tied to the statistical distributions they implicitly assume for the errors.
+
+MSE and the Mean: The Mean Squared Error is a function that is minimized by the mean of the data. This means that a model trained with MSE as its loss function will try to fit the mean of the data. Since the mean is highly susceptible to outliers (a single large value can pull the average far from the majority of data points), the MSE is also highly susceptible to outliers. An outlier's error is squared, which disproportionately increases the total loss, forcing the model to adjust its line dramatically to try and reduce that large, squared value.
+
+MAE and the Median: The Mean Absolute Error is a function that is minimized by the median of the data. The median is the middle value of a dataset and is naturally resistant to outliers. It is not affected by the magnitude of an outlier, only its presence. Because MAE is trying to fit the median, it is less influenced by a few extreme values. The error of an outlier is not squared, so it contributes linearly to the total loss, preventing it from having an outsized influence on the model's parameters.
+
+The Implicit Distribution Assumptions
+The statistical reasons for this difference are rooted in Maximum Likelihood Estimation (MLE), a principle that finds the model parameters most likely to have produced the observed data. When we use a loss function, we are implicitly assuming a probability distribution for our model's errors.
+
+MSE and the Gaussian (Normal) Distribution: When you use MSE as a loss function, you are assuming that the errors in your model follow a Gaussian (Normal) distribution. This bell-shaped curve assumes that small errors are much more probable than large errors. The squaring of errors in MSE heavily penalizes large errors, which aligns with the Gaussian assumption that they are very unlikely. However, an outlier is, by definition, a large and unlikely error. The MSE's assumption of a Gaussian distribution causes it to overcompensate for the outlier, leading to a less robust fit.
+
+MAE and the Laplacian Distribution: When you use MAE as a loss function, you are assuming that the errors in your model follow a Laplacian distribution. This distribution has a "pointy" peak and "fatter" tails compared to the Gaussian distribution. The fatter tails mean that larger errors (outliers) are considered more plausible under the Laplacian assumption. Because MAE treats all errors linearly (not squaring them), it naturally fits a distribution that is more tolerant of these larger errors, making the model more robust to their presence.
+
+In summary, the choice between MAE and MSE is a choice about what you assume your model's errors look like. If your data is clean and the errors are normally distributed, MSE is an appropriate choice. If your data contains outliers, or that large errors are a natural part of the process, then MAE is the more robust and appropriate choice.
+
+
+MAE give median in MLE
+
+Think of it like a game of tug-of-war with a rope and a set of weights. You are trying to find a position on the rope that minimizes the total effort required to hold all the weights. The total effort is the sum of the distances from your position to each weight.
+
+Weights and Outliers: The weights represent your data points. An outlier would be a very heavy weight placed far away from the others.
+
+MAE: MAE is the "sum of the absolute distances" to all the points. In our tug-of-war, this is simply the sum of all the rope lengths between you and each weight.
+
+The Median's Role: To minimize this total rope length, your optimal position is the median. If you move away from the median, you'll gain distance from some weights but lose even more distance from others, increasing your total effort. The median is the unique point where the number of weights to your left equals the number of weights to your right, making it the perfect balancing point to minimize the sum of all distances.
+
+The Mathematical Proof
+
+The formal proof uses calculus to find the minimum of the MAE function.
+
+The function we want to minimize is the sum of absolute errors:
+
+L(c)=∑i=1n​∣xi​−c∣
+
+Where:
+
+    xi​ are the data points.
+
+    c is the value we are trying to find that minimizes the loss (our prediction).
+
+To find the minimum, we take the derivative of L(c) with respect to c and set it to zero.
+
+The derivative of the absolute value function, ∣x−c∣, wrt c, is given by its sign:
+dcd​∣xi​−c∣={−1+1​if xi​>cif xi​<c​
+
+The derivative of our total loss function is the sum of these signs:
+dcd​L(c)=∑i=1n​sign(c−xi​)=(number of xi​<c)−(number of xi​>c)
+
+This derivative is equal to zero when the number of data points less than c is equal to the number of data points greater than c. This condition is precisely the definition of the median.
+
+This is why MAE is often considered more robust to outliers than MSE. Because MAE is trying to find the median, a single far-off outlier only contributes to the total error in a linear way, whereas in MSE, that same outlier's error would be squared, pulling the mean—and thus the model's prediction—dramatically in its direction.
